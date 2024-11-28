@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Notes</title>
+    <title>Sobrappunti</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
+            background-color: #e0f7fa; /* Light blue background */
             color: #333;
         }
         header {
@@ -20,43 +20,51 @@
         }
         .container {
             padding: 2em;
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em;
+            justify-content: center;
+        }
+        .card {
+            background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 1em;
+            flex: 1 1 calc(33.333% - 2em); /* 3 cards per row */
+            max-width: calc(33.333% - 2em);
+            box-sizing: border-box;
+            text-align: center;
         }
-        h2 {
-            color: #4CAF50;
+        .card h2 {
+            color: #2196F3; /* Blue text */
             margin-bottom: 1em;
         }
-        ul {
+        .card ul {
             list-style: none;
             padding: 0;
         }
-        ul li {
+        .card ul li {
             margin: 0.5em 0;
             padding: 0.5em;
             background: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-        ul li a {
+        .card ul li a {
             text-decoration: none;
-            color: #4CAF50;
+            color: #2196F3;
             font-weight: bold;
         }
-        ul li a:hover {
+        .card ul li a:hover {
             text-decoration: underline;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 1em;
-            color: #333;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
+        @media (max-width: 768px) {
+            .card {
+                flex: 1 1 100%; /* Full width for mobile */
+                max-width: 100%;
+            }
         }
     </style>
     <script defer data-domain="appunti.sobrero.dev" src="https://plausible.ettore.one/js/script.js"></script>
@@ -66,17 +74,28 @@
         <h1>SobrAppunti</h1>
     </header>
     <div class="container">
-        <h2>{{ year }} - {{ subject }} - {{ topic }}</h2>
-        {% if files %}
-        <ul>
-            {% for file in files %}
-            <li><a href="/uploads/{{ year }}/{{ subject }}/{{ topic }}/{{ file }}" target="_blank">{{ file }}</a></li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>Ancora nessun file caricato per questa materia.</p>
-        {% endif %}
-        <a class="back-link" href="/">&larr; Torna alla home</a>
+        <h2>{{macroyear}}</h2>
+
+        <a href="/upload">
+                <!-- Card content -->
+                <h2>Carica appunti</h2>
+        </a>
+    </div>
+    <div class="container">
+        {% for year, subjects in years.items() %}
+        <div class="card">
+            <h2>{{ year }}</h2>
+            {% if subjects %}
+            <ul>
+                {% for subject in subjects %}
+                <li><a href="{{ url_for('view_notes', year=macroyear, subject=year, topic=subject) }}">{{ subject }}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No subjects available for this year.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
     <footer style="background-color: #333; color: white; text-align: center; padding: 1em 0; margin-top: 2em; position: fixed; bottom: 0; width: 100%;">
         <p style="margin: 0;">

@@ -59,47 +59,90 @@
     </header>
     <div class="container">
         <form action="/upload" method="POST" enctype="multipart/form-data">
-            <label for="year">Seleziona Indirizzo:</label>
+            <!-- Select Year/Class -->
+            <label for="year">Seleziona anno:</label>
             <select name="year" id="year" required>
-                {% for year in years.keys() %}
+                {% for year, subjects in years.items() %}
                 <option value="{{ year }}">{{ year }}</option>
                 {% endfor %}
             </select>
 
-            <label for="subject">Seleziona Materia:</label>
+            <!-- Select Subject -->
+            <label for="subject">Seleziona Indirizzo:</label>
             <select name="subject" id="subject" required>
-                <!-- Options will be populated by JavaScript -->
+                <!-- Options populated dynamically -->
             </select>
-            <input type="file" name="file" id="file" required>
 
+            <!-- Select Topic -->
+            <label for="topic">Seleziona materia:</label>
+            <select name="topic" id="topic" required>
+                <!-- Options populated dynamically -->
+            </select>
+
+            <!-- File Upload -->
+            <label for="file">Upload File:</label>
+            <input type="file" name="file" id="file" required>
 
             <button type="submit">Upload</button>
         </form>
     </div>
+    <footer style="background-color: #333; color: white; text-align: center; padding: 1em 0; margin-top: 2em; position: fixed; bottom: 0; width: 100%;">
+        <p style="margin: 0;">
+            Made with <span style="color: #e25555;">&hearts;</span> and <span style="font-family: 'Segoe UI Emoji', sans-serif;">🐍</span> by 
+            <a href="https://www.instagram.com/ettorepane" style="color: #4CAF50; text-decoration: none;" target="_blank">Ettore Pane</a> 
+            - <a href="https://github.com/ettorepane/sobrappunti" style="color: #4CAF50; text-decoration: none;" target="_blank">Fork me on GitHub</a>
+        </p>
+    </footer>
 
     <script>
-        const years = {{ years | tojson }};
+        // Data passed from the server
+        const yearsData = {{ years | tojson }};
         const yearSelect = document.getElementById('year');
         const subjectSelect = document.getElementById('subject');
+        const topicSelect = document.getElementById('topic');
 
-        yearSelect.addEventListener('change', function() {
+        // Update subjects based on selected year
+        yearSelect.addEventListener('change', function () {
             const selectedYear = this.value;
-            const subjects = years[selectedYear];
+            const subjects = yearsData[selectedYear] || {};
 
             // Clear existing options
             subjectSelect.innerHTML = '';
+            topicSelect.innerHTML = '';
 
-            // Populate new options
-            subjects.forEach(subject => {
+            // Populate new subject options
+            Object.keys(subjects).forEach(subject => {
                 const option = document.createElement('option');
                 option.value = subject;
                 option.textContent = subject;
                 subjectSelect.appendChild(option);
             });
+
+            // Trigger subject change to populate topics
+            subjectSelect.dispatchEvent(new Event('change'));
         });
 
-        // Trigger change event to populate subjects on page load
+        // Update topics based on selected subject
+        subjectSelect.addEventListener('change', function () {
+            const selectedYear = yearSelect.value;
+            const selectedSubject = this.value;
+            const topics = yearsData[selectedYear]?.[selectedSubject] || [];
+
+            // Clear existing options
+            topicSelect.innerHTML = '';
+
+            // Populate new topic options
+            topics.forEach(topic => {
+                const option = document.createElement('option');
+                option.value = topic;
+                option.textContent = topic;
+                topicSelect.appendChild(option);
+            });
+        });
+
+        // Initialize dropdowns on page load
         yearSelect.dispatchEvent(new Event('change'));
     </script>
 </body>
+
 </html>

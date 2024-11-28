@@ -74,26 +74,21 @@
         <h1>SobrAppunti</h1>
     </header>
     <div class="container">
-        <a href="/upload">
-                <!-- Card content -->
-                <h2>Carica appunti</h2>
-        </a>
-    </div>
-    <div class="container">
-        {% for year, subjects in years.items() %}
         <div class="card">
-            <h2>{{ year }}</h2>
-            {% if subjects %}
-            <ul>
-                {% for subject in subjects %}
-                <li><a href="{{ url_for('view_notes', year=year, subject=subject) }}">{{ subject }}</a></li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>No subjects available for this year.</p>
-            {% endif %}
+            <h2><a href="/upload">Carica appunti</a></h2>
+        </div>
+        {% for year in years.keys() %}
+        <div class="card">
+            <h2><a href="{{ url_for('view_year', year=year) }}">{{ year }}</a></h2>
         </div>
         {% endfor %}
     </div>
+    <footer style="background-color: #333; color: white; text-align: center; padding: 1em 0; margin-top: 2em; position: fixed; bottom: 0; width: 100%;">
+        <p style="margin: 0;">
+            Made with <span style="color: #e25555;">&hearts;</span> and <span style="font-family: 'Segoe UI Emoji', sans-serif;">🐍</span> by 
+            <a href="https://www.instagram.com/ettorepane" style="color: #4CAF50; text-decoration: none;" target="_blank">Ettore Pane</a> 
+            - <a href="https://github.com/ettorepane/sobrappunti" style="color: #4CAF50; text-decoration: none;" target="_blank">Fork me on GitHub</a>
+        </p>
+    </footer>
 </body>
 </html>
