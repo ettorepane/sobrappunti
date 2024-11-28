@@ -51,6 +51,7 @@
             background-color: #45a049;
         }
     </style>
+    <script defer data-domain="appunti.sobrero.dev" src="https://plausible.ettore.one/js/script.js"></script>
 </head>
 <body>
     <header>
@@ -58,19 +59,19 @@
     </header>
     <div class="container">
         <form action="/upload" method="POST" enctype="multipart/form-data">
-            <label for="year">Select Year:</label>
+            <label for="year">Seleziona Indirizzo:</label>
             <select name="year" id="year" required>
                 {% for year in years.keys() %}
-                <option value="{{ year }}">Year {{ year }}</option>
+                <option value="{{ year }}">{{ year }}</option>
                 {% endfor %}
             </select>
 
-            <label for="subject">Select Subject:</label>
+            <label for="subject">Seleziona Materia:</label>
             <select name="subject" id="subject" required>
                 <!-- Options will be populated by JavaScript -->
             </select>
             <input type="file" name="file" id="file" required>
-            
+
 
             <button type="submit">Upload</button>
         </form>
