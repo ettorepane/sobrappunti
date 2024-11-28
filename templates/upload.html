@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: hsl(233, 100%, 68%);
+            color: white;
+            padding: 1em;
+            text-align: center;
+        }
+        .container {
+            padding: 2em;
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin: 1em 0 0.5em;
+            font-weight: bold;
+        }
+        select, input[type="file"], button {
+            padding: 0.5em;
+            font-size: 1em;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Upload Your Notes</h1>
+    </header>
+    <div class="container">
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="year">Select Year:</label>
+            <select name="year" id="year" required>
+                {% for year in years.keys() %}
+                <option value="{{ year }}">Year {{ year }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="subject">Select Subject:</label>
+            <select name="subject" id="subject" required>
+                <!-- Options will be populated by JavaScript -->
+            </select>
+            <input type="file" name="file" id="file" required>
+            
+
+            <button type="submit">Upload</button>
+        </form>
+    </div>
+
+    <script>
+        const years = {{ years | tojson }};
+        const yearSelect = document.getElementById('year');
+        const subjectSelect = document.getElementById('subject');
+
+        yearSelect.addEventListener('change', function() {
+            const selectedYear = this.value;
+            const subjects = years[selectedYear];
+
+            // Clear existing options
+            subjectSelect.innerHTML = '';
+
+            // Populate new options
+            subjects.forEach(subject => {
+                const option = document.createElement('option');
+                option.value = subject;
+                option.textContent = subject;
+                subjectSelect.appendChild(option);
+            });
+        });
+
+        // Trigger change event to populate subjects on page load
+        yearSelect.dispatchEvent(new Event('change'));
+    </script>
+</body>
+</html>
